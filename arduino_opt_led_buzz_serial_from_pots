@@ -1,0 +1,114 @@
+* Arduino Exampels POTs, BUZZ,LEDs and Serial output
+ * ------------------------------ 
+ * Arthacks
+ * A0 A1 A2 A4 A5 GR GR 3v 5v
+ *  *  *  *  *  *  *  *  *  *
+ * pP tP pP P3 P4  _  -  _  +
+ * 
+ * 
+ * 
+ *  1  2  3  4  5  6  7  8  9 10 11 12 13
+ *  *  *  *  *  *  *  *  *  *  *  *  *  *
+ *  1  2  3  4  5  6  7  8  9 10 11 12 13
+ */ 
+
+bool physical_output = true; 
+bool serial_output = false; 
+
+// define pins
+int photoPin = A0; // pin A0 for the photoresistor 
+
+int tempPin = A1;     // tempratur pin 
+
+int potPin1 = A2,     // pin A2 for potentiometer 1
+    potPin2 = A3,     // pin A3 for potentiometer 2
+    potPin3 = A4;     // pin A4 for potentiometer 3
+
+int ledPin1 = 13,     // pin for LED 1
+    ledPin2 = 12,     // pin for LED 2
+    ledPin3 = 11;     // pin for LED 3
+
+int buzzPin = 10;     // pin for Buzzer 10
+
+// intiate variables 
+float temp_voltage, 
+      degreesC;       // variable for temprature sensor
+      
+int val0 = 0,         // variable to store the value of pot A2
+    val1 = 0,         // variable to store the value of pot A2
+    val2 = 0,         // variable to store the value of pot A3   
+    val3 = 0,         // variable to store the value of pot A4
+    val4 = 0,         // variable to store the value of buzzer A1 
+    val5 = 0;         // variable to store the value of photosensor A0
+
+// arduino setup
+void setup() {
+  pinMode(ledPin1, OUTPUT);  // declare the ledPin as an OUTPUT
+  pinMode(ledPin2, OUTPUT);  // declare the ledPin as an OUTPUT
+  pinMode(ledPin3, OUTPUT);  // declare the ledPin as an OUTPUT
+  pinMode(buzzPin, OUTPUT);  // declare the ledPin as an OUTPUT
+  Serial.begin(9600);      // open the serial port at 9600 bps: 
+}
+
+// arduino loop
+void loop() {
+  val0 = analogRead(photoPin);
+  
+  if (serial_output) {
+    Serial.print(val0);
+    Serial.print("\n"); 
+  }
+  
+  temp_voltage = analogRead(tempPin) * 0.004882814; // map 1048
+  degreesC = (temp_voltage  - 0.5) * 100.0; // map Celsius
+  if (serial_output) {
+    Serial.print(degreesC);
+    Serial.print("\n");
+  }
+  val1 = analogRead(potPin1);    // read the value from the sensor
+  if (physical_output) { 
+    digitalWrite(ledPin1, HIGH);  // turn the ledPin on
+    delay(val1);                  // stop the program for some time
+    digitalWrite(ledPin1, LOW);   // turn the ledPin off
+    delay(val1);                  // stop the program for some time
+  }
+  
+  // do the same thing again for pot 2
+  val2 = analogRead(potPin2);  
+  
+  if (physical_output) { 
+    digitalWrite(ledPin2, HIGH);  
+    delay(val2);                 
+    digitalWrite(ledPin2, LOW);  
+    delay(val2);  
+  }
+  
+  // do the same thing again for pot 3
+  val3 = analogRead(potPin3); 
+  
+  if (physical_output) {  
+    digitalWrite(ledPin3, HIGH);  
+    delay(val3);                 
+    digitalWrite(ledPin3, LOW);  
+    delay(val3);
+  }
+  
+  // and buzzer 
+  val4 = analogRead(potPin3);  
+  if (physical_output) {    
+    digitalWrite(buzzPin, HIGH);  
+    delay(val4);                  
+    digitalWrite(buzzPin, LOW);   
+    delay(val4);  
+  }
+
+  // print the values to serial monitor
+  if (serial_output) {  
+    Serial.print(val1); 
+    Serial.print(','); 
+    Serial.print(val2);
+    Serial.print(','); 
+    Serial.print(val3); 
+    Serial.print("\n");
+  }
+}
